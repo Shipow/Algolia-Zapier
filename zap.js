@@ -42,6 +42,16 @@ function _toArray(arr) {
   return Array.isArray(arr) ? arr : Array.from(arr);
 }
 
+if (!Object.entries)
+  Object.entries = function(obj) {
+    var ownProps = Object.keys(obj),
+      i = ownProps.length,
+      resArray = new Array(i); // preallocate the Array
+    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]];
+
+    return resArray;
+  };
+
 var Zap = {
   update_pre_write: function update_pre_write(bundle) {
     var myRecord = {};

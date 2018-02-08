@@ -7,7 +7,5 @@
   "author": "Shipow Algolia",
   "license": "MIT",
   "keywords": [],
-  "dependencies": {
-    "jquery": "3.3.1"
-  }
+  "dependencies": {}
 }
