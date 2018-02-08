@@ -4,10 +4,10 @@
   "description": "",
   "main": "zap.js",
   "repository": "https://Shipow@github.com/Shipow/Algolia-Zapier.git",
-  "author": "Shipow@Algolia",
+  "author": "Shipow Algolia",
   "license": "MIT",
   "keywords": [],
   "dependencies": {
-    "jquery": "^3.3.1"
+    "jquery": "3.3.1"
   }
 }

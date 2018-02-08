@@ -1,8 +1,52 @@
+var _slicedToArray = (function() {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+    try {
+      for (
+        var _i = arr[Symbol.iterator](), _s;
+        !(_n = (_s = _i.next()).done);
+        _n = true
+      ) {
+        _arr.push(_s.value);
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+    return _arr;
+  }
+  return function(arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError(
+        "Invalid attempt to destructure non-iterable instance"
+      );
+    }
+  };
+})();
+
+function _toArray(arr) {
+  return Array.isArray(arr) ? arr : Array.from(arr);
+}
+
 var Zap = {
-  update_pre_write: function(bundle) {
+  update_pre_write: function update_pre_write(bundle) {
     var myRecord = {};
     var data = bundle.action_fields_full.record;
-    var data = resolveJSONPaths(data);
+    data = resolveJSONPaths(data);
     var supported = ["object", "number", "boolean", "string"];
     function tryType(o, f) {
       switch (f) {
@@ -13,13 +57,14 @@ var Zap = {
           }
           return JSON.parse(b);
         case "object":
-          if (o.match(/[^\d]\,/g)) {
-            var s = o.split(/\,(?! )/);
+          var s;
+          if (o.match(/[^\d],/g)) {
+            s = o.split(/,(?! )/);
           }
           if (o.startsWith("{") || o.startsWith("[")) {
             return JSON.parse(
               o
-                .replace(/([a-zA-Z0-9]+?):([\"\'\s]+)/g, '"$1":$2')
+                .replace(/([a-zA-Z0-9]+?):(["'\s]+)/g, '"$1":$2')
                 .replace(/'/g, '"')
             );
           } else if (s.length > 1) {
@@ -27,9 +72,8 @@ var Zap = {
           } else {
             throw "not an object";
           }
-          break;
         case "number":
-          var n = o.replace(/(\d)\,(\d)/g, "$1$2");
+          var n = o.replace(/(\d),(\d)/g, "$1$2");
           if (isNaN(n)) {
             throw "not a number";
           }
@@ -37,6 +81,8 @@ var Zap = {
         case "string":
           if (typeof o === undefined || o === null) break;
           return o;
+        default:
+          break;
       }
     }
 
@@ -60,10 +106,17 @@ var Zap = {
       if (Array.isArray(input)) {
         return input.map(resolveJSONPaths);
       }
-      return Object.entries(input).reduce((acc, cur) => {
-        const [key, value] = cur;
+      return Object.entries(input).reduce(function(acc, cur) {
+        var _cur = _slicedToArray(cur, 2),
+          key = _cur[0],
+          value = _cur[1];
+
         if (key.includes(".")) {
-          const [firstPath, ...paths] = key.split(".");
+          var _key$split = key.split("."),
+            _key$split2 = _toArray(_key$split),
+            firstPath = _key$split2[0],
+            paths = _key$split2.slice(1);
+
           if (acc[firstPath] === undefined) {
             acc[firstPath] = {};
           }
@@ -80,7 +133,6 @@ var Zap = {
       }, {});
     }
 
-    //myRecord = JSON.stringify(resolveJSONPaths(myRecord));
     myRecord = JSON.stringify(myRecord);
 
     return {

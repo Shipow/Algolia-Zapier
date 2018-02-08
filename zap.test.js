@@ -143,6 +143,4 @@ it("works", () => {
       JSON.stringify(test.output)
     );
   });
-
-  console.log("√ All test passed");
 });
