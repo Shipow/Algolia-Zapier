@@ -139,8 +139,6 @@ it("works", () => {
 
   tests2.forEach(function(test) {
     bundle.action_fields_full.record = test.input;
-    expect(Zap.update_pre_write(bundle).data).toEqual(
-      JSON.stringify(test.output)
-    );
+    expect(JSON.parse(Zap.update_pre_write(bundle).data)).toEqual(test.output);
   });
 });
