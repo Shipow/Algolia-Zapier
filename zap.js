@@ -1,3 +1,17 @@
+var _extends =
+  Object.assign ||
+  function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+
 var _slicedToArray = (function() {
   function sliceIterator(arr, i) {
     var _arr = [];
@@ -40,6 +54,18 @@ var _slicedToArray = (function() {
 
 function _toArray(arr) {
   return Array.isArray(arr) ? arr : Array.from(arr);
+}
+
+function merge(a, b) {
+  return Object.entries(a).reduce(function(res, _ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      key = _ref2[0],
+      val = _ref2[1];
+
+    return _extends({}, res, {
+      [key]: typeof res[key] === "object" ? merge(res[key], val) : val
+    });
+  }, b);
 }
 
 if (!Object.entries)
@@ -130,9 +156,7 @@ var Zap = {
           if (acc[firstPath] === undefined) {
             acc[firstPath] = {};
           }
-          acc[firstPath] = $.extend(
-            true,
-            {},
+          acc[firstPath] = merge(
             acc[firstPath],
             resolveJSONPaths({ [paths.join(".")]: value })
           );
